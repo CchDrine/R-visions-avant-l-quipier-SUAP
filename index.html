@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme de Révisions - Secours à Personnes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .quiz-option:hover {
+            background-color: #f3f4f6;
+        }
+        .quiz-option.selected {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+        .quiz-option.correct {
+            background-color: #d1fae5;
+            border-color: #10b981;
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-red-600 to-red-800 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center mb-4 md:mb-0">
+                        <svg class="w-10 h-10 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path>
+                        </svg>
+                        <h1 class="text-2xl font-bold">SECOURS À PERSONNES</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button id="profile-btn" class="bg-white text-red-700 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition">
+                            Mon Profil
+                        </button>
+                        <button id="help-btn" class="bg-white text-red-700 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition">
+                            Aide
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <!-- Welcome Section -->
+            <section id="welcome-section" class="mb-12">
+                <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Bienvenue dans votre programme de révisions</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Ce programme vous aidera à vous préparer efficacement aux épreuves de secours à personnes. 
+                        Suivez votre progression et maîtrisez les compétences essentielles pour devenir pompier.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button id="start-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                            Commencer les révisions
+                        </button>
+                        <button id="resume-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                            Reprendre où j'en étais
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="hidden mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Progress Card -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Votre progression</h3>
+                        <div class="flex justify-center mb-4">
+                            <div class="relative w-40 h-40">
+                                <svg class="w-full h-full">
+                                    <circle cx="80" cy="80" r="70" fill="none" stroke="#e5e7eb" stroke-width="12" />
+                                    <circle id="progress-circle" cx="80" cy="80" r="70" fill="none" stroke="#ef4444" stroke-width="12" stroke-dasharray="439.8" stroke-dashoffset="330" class="progress-ring" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span id="progress-percentage" class="text-3xl font-bold text-gray-800">25%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Modules complétés:</span>
+                                <span class="font-medium text-gray-800">3/10</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Quiz réussis:</span>
+                                <span class="font-medium text-gray-800">12/48</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Temps total:</span>
+                                <span class="font-medium text-gray-800">4h 23min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Card -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Vos réussites</h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-1">
+                                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600">Débutant</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600">Intermédiaire</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600">Expert</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-1">
+                                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600">3 Quiz parfaits</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-1">
+                                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600">Assidu</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-gray-600">Studieux</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Card -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Recommandé pour vous</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Réviser les hémorragies</h4>
+                                    <p class="text-sm text-gray-600">Votre dernier score: 60%</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Nouveau module disponible</h4>
+                                    <p class="text-sm text-gray-600">Arrêt cardio-respiratoire</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Félicitations!</h4>
+                                    <p class="text-sm text-gray-600">Vous avez terminé le module "Bilans"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Themes Section -->
+            <section id="themes-section" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Thèmes de révision</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Theme Cards -->
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-red-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Les bilans</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à évaluer l'état d'une victime et à déterminer les actions à entreprendre.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-green-600">Progression: 80%</span>
+                                <button class="theme-btn bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="bilans">
+                                    Continuer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-blue-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Sécurité et hygiène</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Maîtrisez les protocoles de sécurité et d'hygiène lors des interventions.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-green-600">Progression: 65%</span>
+                                <button class="theme-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="securite">
+                                    Continuer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-yellow-500"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Obstruction des voies aériennes</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à identifier et à traiter les obstructions des voies aériennes.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-yellow-600">Progression: 40%</span>
+                                <button class="theme-btn bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="obstruction">
+                                    Continuer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-red-700"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-red-700" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Les hémorragies</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Maîtrisez les techniques pour arrêter les saignements abondants.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-red-600">Progression: 60%</span>
+                                <button class="theme-btn bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="hemorragies">
+                                    Continuer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-purple-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Perte de connaissance</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à reconnaître et à prendre en charge une victime inconsciente.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-purple-600">Progression: 25%</span>
+                                <button class="theme-btn bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="perte-connaissance">
+                                    Continuer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-green-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Arrêt cardio-respiratoire</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Maîtrisez les techniques de réanimation cardio-pulmonaire.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-600">Non commencé</span>
+                                <button class="theme-btn bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="arret-cardio">
+                                    Commencer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-indigo-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Le malaise</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à reconnaître et à prendre en charge une victime qui présente un malaise.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-600">Non commencé</span>
+                                <button class="theme-btn bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="malaise">
+                                    Commencer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-orange-500"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Les plaies</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à évaluer et à traiter différents types de plaies.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-600">Non commencé</span>
+                                <button class="theme-btn bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="plaies">
+                                    Commencer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-pink-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Les brûlures</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à évaluer la gravité et à traiter les différents types de brûlures.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-600">Non commencé</span>
+                                <button class="theme-btn bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="brulures">
+                                    Commencer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="theme-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                        <div class="h-3 bg-teal-600"></div>
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h6a2 2 0 012 2H5a1 1 0 00-1 1v4a1 1 0 001 1h14a1 1 0 001-1V6a1 1 0 00-1-1h-1.382a1 1 0 00-.894.553l-.448.894a1 1 0 01-.894.553h-6.764a1 1 0 01-.894-.553l-.448-.894A1 1 0 0010.382 5H9a2 2 0 012-2h1a2 2 0 012 2v6.586l.293-.293a1 1 0 011.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a1 1 0 111.414-1.414l.293.293V5z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-800">Transmission de l'alerte</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Apprenez à transmettre efficacement les informations lors d'une alerte.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-gray-600">Non commencé</span>
+                                <button class="theme-btn bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 px-4 rounded-lg transition" data-theme="alerte">
+                                    Commencer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz-section" class="hidden">
+                <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="quiz-title" class="text-2xl font-bold text-gray-800">Quiz: Les bilans</h2>
+                        <div class="flex items-center">
+                            <span id="quiz-progress" class="text-sm font-medium text-gray-600 mr-4">Question 1/5</span>
+                            <button id="quiz-exit" class="text-gray-500 hover:text-gray-700">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="quiz-question" class="mb-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Quelle est la première étape du bilan vital ?</h3>
+                        <div class="space-y-3">
+                            <div class="quiz-option border border-gray-300 rounded-lg p-4 cursor-pointer">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">
+                                        <div class="option-check w-3 h-3 rounded-full bg-blue-600 hidden"></div>
+                                    </div>
+                                    <span>Vérifier la respiration</span>
+                                </div>
+                            </div>
+                            <div class="quiz-option border border-gray-300 rounded-lg p-4 cursor-pointer">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">
+                                        <div class="option-check w-3 h-3 rounded-full bg-blue-600 hidden"></div>
+                                    </div>
+                                    <span>Vérifier la conscience</span>
+                                </div>
+                            </div>
+                            <div class="quiz-option border border-gray-300 rounded-lg p-4 cursor-pointer">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">
+                                        <div class="option-check w-3 h-3 rounded-full bg-blue-600 hidden"></div>
+                                    </div>
+                                    <span>Vérifier le pouls</span>
+                                </div>
+                            </div>
+                            <div class="quiz-option border border-gray-300 rounded-lg p-4 cursor-pointer">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3">
+                                        <div class="option-check w-3 h-3 rounded-full bg-blue-600 hidden"></div>
+                                    </div>
+                                    <span>Vérifier les saignements</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="quiz-feedback" class="mb-6 hidden">
+                        <div class="p-4 rounded-lg bg-green-100 border border-green-300">
+                            <div class="flex items-start">
+                                <svg class="w-6 h-6 text-green-600 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-green-800">Correct !</p>
+                                    <p class="text-green-700">La première étape du bilan vital est de vérifier la conscience de la victime.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button id="quiz-prev" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition hidden">
+                            Précédent
+                        </button>
+                        <button id="quiz-next" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition">
+                            Valider
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Case Study Section -->
+            <section id="case-study-section" class="hidden">
+                <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Cas pratique: Hémorragie externe</h2>
+                        <button id="case-study-exit" class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                            <p class="text-blue-700">
+                                Vous êtes en intervention sur un accident de la voie publique. Un homme de 35 ans présente une plaie profonde à l'avant-bras droit qui saigne abondamment.
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Quelle est la première action à entreprendre ?</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="case-option border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Appliquer un point de compression directe sur la plaie</span>
+                            </div>
+                            <div class="case-option border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Poser un garrot</span>
+                            </div>
+                            <div class="case-option border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Surélever le membre</span>
+                            </div>
+                            <div class="case-option border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Appeler immédiatement les secours</span>
+                            </div>
+                        </div>
+
+                        <div id="case-feedback" class="p-4 rounded-lg bg-green-100 border border-green-300 mb-6 hidden">
+                            <div class="flex items-start">
+                                <svg class="w-6 h-6 text-green-600 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-green-800">Bonne réponse !</p>
+                                    <p class="text-green-700">La compression directe est la première action à entreprendre face à une hémorragie externe. Elle permet d'arrêter le saignement en attendant les secours.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Que faites-vous ensuite ?</h3>
+                        <div class="space-y-4">
+                            <div class="case-option-2 border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Allonger la victime et surélever le membre</span>
+                            </div>
+                            <div class="case-option-2 border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Poser un pansement compressif</span>
+                            </div>
+                            <div class="case-option-2 border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Nettoyer la plaie avec de l'eau</span>
+                            </div>
+                            <div class="case-option-2 border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-gray-50">
+                                <span>Donner à boire à la victime</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button id="case-next" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition">
+                            Continuer
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resources Section -->
+            <section id="resources-section" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Ressources complémentaires</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Liens utiles</h3>
+                            <ul class="space-y-3">
+                                <li>
+                                    <a href="https://www.pompiers.fr/" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                                        </svg>
+                                        Fédération Nationale des Sapeurs-Pompiers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.secourisme.net/" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                                        </svg>
+                                        Secourisme.net - Ressources de formation
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.croix-rouge.fr/Je-me-forme/Particuliers/Les-6-gestes-de-base" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                                        </svg>
+                                        Croix-Rouge - Les 6 gestes de base
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.gouvernement.fr/risques/se-preparer-aux-premiers-secours" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
+                                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
+                                        </svg>
+                                        Gouvernement - Se préparer aux premiers secours
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Documents téléchargeables</h3>
+                            <ul class="space-y-3">
+                                <li>
+                                    <a href="#" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Fiches récapitulatives - Bilans (PDF)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Guide des gestes d'urgence (PDF)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Protocoles d'intervention (PDF)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="flex items-center text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Schémas anatomiques (PDF)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold mb-2">Programme de Révisions - Secours à Personnes</h3>
+                        <p class="text-gray-400">Formez-vous efficacement aux gestes qui sauvent</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-red-400 transition">Mentions légales</a>
+                        <a href="#" class="hover:text-red-400 transition">Contact</a>
+                        <a href="#" class="hover:text-red-400 transition">Aide</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-800">Mon profil</h3>
+                <button id="close-profile" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                        <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800">Thomas Dupont</h4>
+                        <p class="text-gray-600">Élève pompier</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+                        <input type="text" value="Thomas Dupont" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" value="thomas.dupont@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Centre de formation</label>
+                        <input type="text" value="SDIS 31 - Toulouse" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div class="space-y-2 mb-6">
+                    <h4 class="font-medium text-gray-800">Statistiques</h4>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Temps total d'étude:</span>
+                        <span>4h 23min</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Quiz complétés:</span>
+                        <span>12/48</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Score moyen:</span>
+                        <span>78%</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition">
+                        Sauvegarder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-xl font-bold text-gray-800">Aide</h3>
+                <button id="close-help" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Comment utiliser ce programme ?</h4>
+                        <p class="text-gray-600">Ce programme de révisions vous permet de vous entraîner sur différents thèmes du secours à personnes. Cliquez sur un thème pour commencer ou reprendre vos révisions.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Comment suivre ma progression ?</h4>
+                        <p class="text-gray-600">Votre progression est automatiquement enregistrée. Vous pouvez la consulter dans votre tableau de bord ou dans votre profil.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Comment fonctionnent les quiz ?</h4>
+                        <p class="text-gray-600">Chaque thème contient des quiz pour tester vos connaissances. Sélectionnez la réponse qui vous semble correcte et validez. Un feedback vous sera donné immédiatement.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Comment fonctionnent les cas pratiques ?</h4>
+                        <p class="text-gray-600">Les cas pratiques vous mettent en situation réelle. Vous devez prendre des décisions comme si vous étiez en intervention. Chaque choix peut influencer la suite du scénario.</p>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <p class="text-gray-600">Pour toute question supplémentaire, contactez votre formateur ou envoyez un email à <a href="mailto:support@formation-pompiers.fr" class="text-blue-600 hover:text-blue-800">support@formation-pompiers.fr</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation between sections
+            const startBtn = document.getElementById('start-btn');
+            const resumeBtn = document.getElementById('resume-btn');
+            const welcomeSection = document.getElementById('welcome-section');
+            const dashboardSection = document.getElementById('dashboard-section');
+            const themesSection = document.getElementById('themes-section');
+            const quizSection = document.getElementById('quiz-section');
+            const caseStudySection = document.getElementById('case-study-section');
+            
+            // Profile modal
+            const profileBtn = document.getElementById('profile-btn');
+            const profileModal = document.getElementById('profile-modal');
+            const closeProfile = document.getElementById('close-profile');
+            
+            // Help modal
+            const helpBtn = document.getElementById('help-btn');
+            const helpModal = document.getElementById('help-modal');
+            const closeHelp = document.getElementById('close-help');
+            
+            // Quiz navigation
+            const quizExit = document.getElementById('quiz-exit');
+            const quizNext = document.getElementById('quiz-next');
+            const quizPrev = document.getElementById('quiz-prev');
+            const quizOptions = document.querySelectorAll('.quiz-option');
+            const quizFeedback = document.getElementById('quiz-feedback');
+            
+            // Case study navigation
+            const caseStudyExit = document.getElementById('case-study-exit');
+            const caseNext = document.getElementById('case-next');
+            const caseOptions = document.querySelectorAll('.case-option');
+            const caseFeedback = document.getElementById('case-feedback');
+            
+            // Theme buttons
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            
+            // Start button click
+            startBtn.addEventListener('click', function() {
+                welcomeSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+            });
+            
+            // Resume button click
+            resumeBtn.addEventListener('click', function() {
+                welcomeSection.classList.add('hidden');
+                dashboardSection.classList.remove('hidden');
+            });
+            
+            // Profile modal
+            profileBtn.addEventListener('click', function() {
+                profileModal.classList.remove('hidden');
+            });
+            
+            closeProfile.addEventListener('click', function() {
+                profileModal.classList.add('hidden');
+            });
+            
+            // Help modal
+            helpBtn.addEventListener('click', function() {
+                helpModal.classList.remove('hidden');
+            });
+            
+            closeHelp.addEventListener('click', function() {
+                helpModal.classList.add('hidden');
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === profileModal) {
+                    profileModal.classList.add('hidden');
+                }
+                if (e.target === helpModal) {
+                    helpModal.classList.add('hidden');
+                }
+            });
+            
+            // Theme buttons
+            themeButtons.forEach(button => {
+                button.```
